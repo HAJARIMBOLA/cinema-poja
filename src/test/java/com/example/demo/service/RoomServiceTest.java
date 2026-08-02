@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +27,7 @@ class RoomServiceTest {
   @Test
   void shouldGenerateOneSeatPerCapacityUnit() {
     when(roomRepository.existsByNumber("A1")).thenReturn(false);
-    when(roomRepository.save(any(Room.class))).thenAnswer(InvocationOnMock::getArgument);
+    when(roomRepository.save(any(Room.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     Room room = roomService.createRoom("A1", 5);
 
