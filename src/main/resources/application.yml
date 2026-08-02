@@ -17,6 +17,8 @@ spring:
         format_sql: true
         jdbc:
           time_zone: UTC
+        type:
+          preferred_duration_jdbc_type: BIGINT
 
   flyway:
     enabled: true
