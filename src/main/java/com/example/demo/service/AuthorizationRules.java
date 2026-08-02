@@ -4,9 +4,9 @@ import com.example.demo.domain.enums.UserRole;
 import java.util.UUID;
 
 /**
- * Centralizes the access-control rules described in the project specification, so they are
- * defined once, are unit-testable in isolation, and can be reused by both controllers (via
- * security) and services.
+ * Centralizes the access-control rules described in the project specification, so they are defined
+ * once, are unit-testable in isolation, and can be reused by both controllers (via security) and
+ * services.
  */
 public final class AuthorizationRules {
 

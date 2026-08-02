@@ -27,9 +27,9 @@ public class ReservationService {
   private final SeatService seatService;
 
   /**
-   * Creates a reservation for the given user, projection and set of seats. Enforces that every
-   * seat belongs to the projection's room, and that none of the requested seats is already booked
-   * for that same projection.
+   * Creates a reservation for the given user, projection and set of seats. Enforces that every seat
+   * belongs to the projection's room, and that none of the requested seats is already booked for
+   * that same projection.
    */
   @Transactional
   public Reservation createReservation(UUID userId, UUID projectionId, Set<UUID> seatIds) {
@@ -43,7 +43,8 @@ public class ReservationService {
 
     Set<UUID> roomSeatIds =
         projection.getRoom().getSeats().stream().map(Seat::getId).collect(Collectors.toSet());
-    boolean allSeatsBelongToRoom = seats.stream().allMatch(seat -> roomSeatIds.contains(seat.getId()));
+    boolean allSeatsBelongToRoom =
+        seats.stream().allMatch(seat -> roomSeatIds.contains(seat.getId()));
     if (!allSeatsBelongToRoom) {
       throw new ConflictException("One or more seats do not belong to the projection's room");
     }
@@ -71,7 +72,10 @@ public class ReservationService {
   }
 
   public BigDecimal totalPrice(Reservation reservation) {
-    return reservation.getProjection().getSeatPrice().multiply(BigDecimal.valueOf(reservation.getSeats().size()));
+    return reservation
+        .getProjection()
+        .getSeatPrice()
+        .multiply(BigDecimal.valueOf(reservation.getSeats().size()));
   }
 
   public Reservation getById(UUID id) {

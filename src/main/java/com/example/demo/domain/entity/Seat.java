@@ -20,9 +20,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(
-    name = "seats",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"room_id", "number"}))
+@Table(name = "seats", uniqueConstraints = @UniqueConstraint(columnNames = {"room_id", "number"}))
 @Getter
 @Setter
 @Builder

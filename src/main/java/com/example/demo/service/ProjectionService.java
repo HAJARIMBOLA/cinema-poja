@@ -23,8 +23,8 @@ public class ProjectionService {
   private final RoomService roomService;
 
   /**
-   * Creates a projection after checking that the room is not already booked, at the same time,
-   * for the duration of the movie (start inclusive, end exclusive on both sides).
+   * Creates a projection after checking that the room is not already booked, at the same time, for
+   * the duration of the movie (start inclusive, end exclusive on both sides).
    */
   @Transactional
   public Projection createProjection(

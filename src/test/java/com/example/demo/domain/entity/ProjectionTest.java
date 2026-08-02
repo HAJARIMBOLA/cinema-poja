@@ -77,7 +77,10 @@ class ProjectionTest {
   @Test
   void shouldRejectMissingMovie() {
     Projection projection =
-        Projection.builder().datetime(Instant.now()).seatPrice(BigDecimal.TEN).room(aRoom())
+        Projection.builder()
+            .datetime(Instant.now())
+            .seatPrice(BigDecimal.TEN)
+            .room(aRoom())
             .build();
 
     Set<ConstraintViolation<Projection>> violations = validator.validate(projection);

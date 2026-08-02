@@ -3,7 +3,6 @@ package com.example.demo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.demo.dao.RoomRepository;
@@ -44,8 +43,7 @@ class RoomServiceTest {
   void shouldRejectDuplicateRoomNumber() {
     when(roomRepository.existsByNumber("A1")).thenReturn(true);
 
-    assertThatThrownBy(() -> roomService.createRoom("A1", 5))
-        .isInstanceOf(ConflictException.class);
+    assertThatThrownBy(() -> roomService.createRoom("A1", 5)).isInstanceOf(ConflictException.class);
   }
 
   @Test

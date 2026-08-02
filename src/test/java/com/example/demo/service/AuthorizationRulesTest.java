@@ -59,8 +59,7 @@ class AuthorizationRulesTest {
   void clientCanViewOwnReservation() {
     UUID clientId = UUID.randomUUID();
 
-    assertThat(AuthorizationRules.canViewReservation(UserRole.CLIENT, clientId, clientId))
-        .isTrue();
+    assertThat(AuthorizationRules.canViewReservation(UserRole.CLIENT, clientId, clientId)).isTrue();
   }
 
   @Test
