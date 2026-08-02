@@ -123,7 +123,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
     testImplementation 'org.testcontainers:testcontainers:2.0.2'
-    testImplementation 'org.testcontainers:postgresql:2.0.2'
+    testImplementation 'org.testcontainers:testcontainers-postgresql:2.0.2'
     testImplementation 'org.springframework.security:spring-security-test:6.2.1'
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3'
