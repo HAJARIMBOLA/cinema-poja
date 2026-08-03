@@ -3,9 +3,9 @@ spring:
     name: cinema
 
   datasource:
-    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/cinema}
-    username: ${DATASOURCE_USERNAME:cinema}
-    password: ${DATASOURCE_PASSWORD:cinema}
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -25,7 +25,7 @@ spring:
     locations: classpath:db/migration
 
 jwt:
-  secret: ${JWT_SECRET:dev-only-secret-change-me-dev-only-secret-change-me}
+  secret: ${JWT_SECRET}
   expiration-minutes: ${JWT_EXPIRATION_MINUTES:60}
 
 logging:
