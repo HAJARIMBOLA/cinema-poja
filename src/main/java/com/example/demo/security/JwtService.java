@@ -38,7 +38,6 @@ public class JwtService {
         .compact();
   }
 
-  /** Returns the claims if the token is valid and not expired, or empty otherwise. */
   public Optional<Claims> parseClaims(String token) {
     try {
       Claims claims =

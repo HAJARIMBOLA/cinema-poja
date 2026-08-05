@@ -16,10 +16,6 @@ public class SeatService {
 
   private final SeatRepository seatRepository;
 
-  /**
-   * Loads every seat for the given ids, and throws if any id could not be resolved (e.g. a typo or
-   * a seat that was deleted).
-   */
   public Set<Seat> getAllByIds(Set<UUID> ids) {
     List<Seat> found = seatRepository.findAllById(ids);
     if (found.size() != ids.size()) {

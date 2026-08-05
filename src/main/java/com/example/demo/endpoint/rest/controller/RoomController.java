@@ -34,7 +34,6 @@ public class RoomController {
     return RoomResponse.from(roomService.getById(id));
   }
 
-  /** Authorization (MANAGER only) is enforced by SecurityConfig. */
   @PutMapping
   public ResponseEntity<RoomResponse> create(@Valid @RequestBody RoomRequest request) {
     Room room = roomService.createRoom(request.number(), request.capacity());

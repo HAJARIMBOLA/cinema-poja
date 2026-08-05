@@ -24,7 +24,6 @@ public class ProjectionController {
 
   private final ProjectionService projectionService;
 
-  /** GET /projections: should return 200 for everyone (enforced as permitAll in SecurityConfig). */
   @GetMapping
   public List<ProjectionResponse> getAll() {
     return projectionService.getAll().stream().map(ProjectionResponse::from).toList();
@@ -35,7 +34,6 @@ public class ProjectionController {
     return ProjectionResponse.from(projectionService.getById(id));
   }
 
-  /** Authorization (403 for CLIENT/EMPLOYEES, 200 for MANAGERS) is enforced by SecurityConfig. */
   @PutMapping
   public ResponseEntity<ProjectionResponse> create(@Valid @RequestBody ProjectionRequest request) {
     Projection projection =

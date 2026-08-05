@@ -34,7 +34,6 @@ public class MovieController {
     return MovieResponse.from(movieService.getById(id));
   }
 
-  /** Authorization (403 for CLIENTS/EMPLOYEES, 200 for MANAGERS) is enforced by SecurityConfig. */
   @PutMapping
   public ResponseEntity<MovieResponse> create(@Valid @RequestBody MovieRequest request) {
     Movie movie =

@@ -69,7 +69,6 @@ class ProjectionServiceTest {
     when(movieService.getById(movieId)).thenReturn(movie);
     when(roomService.getById(roomId)).thenReturn(room);
 
-    // Existing projection: 18:00 -> 20:00
     Projection existing =
         Projection.builder()
             .datetime(Instant.parse("2026-09-01T18:00:00Z"))
@@ -78,7 +77,6 @@ class ProjectionServiceTest {
             .build();
     when(projectionRepository.findByRoomId(roomId)).thenReturn(List.of(existing));
 
-    // New projection: 19:00 -> 21:00 (overlaps)
     Instant overlappingStart = Instant.parse("2026-09-01T19:00:00Z");
 
     assertThatThrownBy(
@@ -94,7 +92,6 @@ class ProjectionServiceTest {
     when(movieService.getById(movieId)).thenReturn(movie);
     when(roomService.getById(roomId)).thenReturn(room);
 
-    // Existing projection: 18:00 -> 20:00
     Projection existing =
         Projection.builder()
             .datetime(Instant.parse("2026-09-01T18:00:00Z"))
@@ -105,7 +102,6 @@ class ProjectionServiceTest {
     when(projectionRepository.save(any(Projection.class)))
         .thenAnswer(InvocationOnMock::getArgument);
 
-    // New projection starts exactly when the previous one ends: 20:00
     Instant backToBackStart = Instant.parse("2026-09-01T20:00:00Z");
 
     Projection projection =
@@ -119,7 +115,7 @@ class ProjectionServiceTest {
     Movie movie = movieWithDuration(Duration.ofMinutes(120));
     when(movieService.getById(movieId)).thenReturn(movie);
     when(roomService.getById(roomId)).thenReturn(room);
-    // No projections registered for THIS room (the overlapping one is in another room)
+
     when(projectionRepository.findByRoomId(roomId)).thenReturn(List.of());
     when(projectionRepository.save(any(Projection.class)))
         .thenAnswer(InvocationOnMock::getArgument);

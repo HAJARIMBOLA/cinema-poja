@@ -16,7 +16,6 @@ public class RoomService {
 
   private final RoomRepository roomRepository;
 
-  /** Creates a room and automatically generates one seat per capacity unit, numbered "1".."N". */
   @Transactional
   public Room createRoom(String number, int capacity) {
     if (roomRepository.existsByNumber(number)) {

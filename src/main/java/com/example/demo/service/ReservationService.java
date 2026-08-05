@@ -26,11 +26,6 @@ public class ReservationService {
   private final ProjectionService projectionService;
   private final SeatService seatService;
 
-  /**
-   * Creates a reservation for the given user, projection and set of seats. Enforces that every seat
-   * belongs to the projection's room, and that none of the requested seats is already booked for
-   * that same projection.
-   */
   @Transactional
   public Reservation createReservation(UUID userId, UUID projectionId, Set<UUID> seatIds) {
     if (seatIds == null || seatIds.isEmpty()) {

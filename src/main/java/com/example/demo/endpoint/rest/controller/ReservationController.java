@@ -29,10 +29,6 @@ public class ReservationController {
 
   private final ReservationService reservationService;
 
-  /**
-   * GET /reservations: 403 for CLIENTS, 200 for MANAGERS and EMPLOYEES. Role check is enforced by
-   * SecurityConfig; only MANAGER/EMPLOYEE tokens can reach this method.
-   */
   @GetMapping
   public List<ReservationResponse> getAll() {
     return reservationService.getAll().stream()
@@ -42,11 +38,6 @@ public class ReservationController {
         .toList();
   }
 
-  /**
-   * GET /reservationById: 200 if the CLIENT owns the reservation, 403 if it belongs to another
-   * CLIENT, 200 for MANAGERS and EMPLOYEES. Ownership depends on the resource, so it is checked
-   * here rather than in SecurityConfig.
-   */
   @GetMapping("/{id}")
   public ReservationResponse getById(
       @PathVariable UUID id, @AuthenticationPrincipal AuthenticatedUser requester) {
@@ -62,10 +53,6 @@ public class ReservationController {
     return ReservationResponse.from(reservation, reservationService.totalPrice(reservation));
   }
 
-  /**
-   * PUT /reservation: 403 for CLIENTS, 200 for EMPLOYEES and MANAGERS. Role check is enforced by
-   * SecurityConfig; only MANAGER/EMPLOYEE tokens can reach this method.
-   */
   @PutMapping
   public ResponseEntity<ReservationResponse> create(
       @Valid @RequestBody ReservationRequest request) {
