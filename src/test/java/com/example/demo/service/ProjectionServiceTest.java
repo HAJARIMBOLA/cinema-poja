@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +52,7 @@ class ProjectionServiceTest {
     when(roomService.getById(roomId)).thenReturn(room);
     when(projectionRepository.findByRoomId(roomId)).thenReturn(List.of());
     when(projectionRepository.save(any(Projection.class)))
-        .thenAnswer(invocation -> invocation.getArgument(0));
+        .thenAnswer(InvocationOnMock::getArgument);
 
     Instant datetime = Instant.parse("2026-09-01T18:00:00Z");
     Projection projection =
@@ -102,7 +103,7 @@ class ProjectionServiceTest {
             .build();
     when(projectionRepository.findByRoomId(roomId)).thenReturn(List.of(existing));
     when(projectionRepository.save(any(Projection.class)))
-        .thenAnswer(invocation -> invocation.getArgument(0));
+        .thenAnswer(InvocationOnMock::getArgument);
 
     // New projection starts exactly when the previous one ends: 20:00
     Instant backToBackStart = Instant.parse("2026-09-01T20:00:00Z");
@@ -121,7 +122,7 @@ class ProjectionServiceTest {
     // No projections registered for THIS room (the overlapping one is in another room)
     when(projectionRepository.findByRoomId(roomId)).thenReturn(List.of());
     when(projectionRepository.save(any(Projection.class)))
-        .thenAnswer(invocation -> invocation.getArgument(0));
+        .thenAnswer(InvocationOnMock::getArgument);
 
     Instant datetime = Instant.parse("2026-09-01T18:00:00Z");
     Projection projection =
