@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -46,7 +45,7 @@ class UserServiceTest {
     User user = aClient();
     when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
     when(passwordEncoder.encode("plain-password")).thenReturn("hashed-password");
-    when(userRepository.save(any(User.class))).thenAnswer(InvocationOnMock::getArgument);
+    when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     User saved = userService.register(user);
 

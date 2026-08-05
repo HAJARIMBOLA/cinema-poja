@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -86,7 +85,7 @@ class ReservationServiceTest {
     when(seatService.getAllByIds(Set.of(seat.getId()))).thenReturn(Set.of(seat));
     when(reservationRepository.findByProjectionId(projectionId)).thenReturn(List.of());
     when(reservationRepository.save(any(Reservation.class)))
-        .thenAnswer(InvocationOnMock::getArgument);
+        .thenAnswer(invocation -> invocation.getArgument(0));
 
     Reservation reservation =
         reservationService.createReservation(userId, projectionId, Set.of(seat.getId()));

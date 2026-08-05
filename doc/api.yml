@@ -1,0 +1,538 @@
+openapi: 3.0.3
+
+info:
+  title: Cinema API
+  description: Booking API for a cinema - rooms, movies, projections and reservations.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Auth
+  - name: Movies
+  - name: Rooms
+  - name: Projections
+  - name: Reservations
+
+paths:
+  /auth/register:
+    post:
+      tags: [ Auth ]
+      summary: Register a new user and return a JWT
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /auth/login:
+    post:
+      tags: [ Auth ]
+      summary: Authenticate and return a JWT
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /movies:
+    get:
+      tags: [ Movies ]
+      summary: List all movies
+      security: []
+      responses:
+        '200':
+          description: Movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+    put:
+      tags: [ Movies ]
+      summary: Create a movie (MANAGER only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieRequest'
+      responses:
+        '201':
+          description: Movie created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /movies/{id}:
+    get:
+      tags: [ Movies ]
+      summary: Get a movie by id
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rooms:
+    get:
+      tags: [ Rooms ]
+      summary: List all rooms
+      security: []
+      responses:
+        '200':
+          description: Rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+    put:
+      tags: [ Rooms ]
+      summary: Create a room, generating one seat per capacity unit (MANAGER only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomRequest'
+      responses:
+        '201':
+          description: Room created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /rooms/{id}:
+    get:
+      tags: [ Rooms ]
+      summary: Get a room by id
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /projections:
+    get:
+      tags: [ Projections ]
+      summary: List all projections, open to everyone
+      security: []
+      responses:
+        '200':
+          description: Projections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Projection'
+    put:
+      tags: [ Projections ]
+      summary: Create a projection (MANAGER only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectionRequest'
+      responses:
+        '201':
+          description: Projection created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projection'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: The room is already booked for that time slot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /projections/{id}:
+    get:
+      tags: [ Projections ]
+      summary: Get a projection by id
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Projection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projection'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /reservations:
+    get:
+      tags: [ Reservations ]
+      summary: List all reservations (MANAGER and EMPLOYEE only)
+      responses:
+        '200':
+          description: Reservations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    put:
+      tags: [ Reservations ]
+      summary: Create a reservation (MANAGER and EMPLOYEE only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+      responses:
+        '201':
+          description: Reservation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: A seat is already booked, or does not belong to the projection room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /reservations/{id}:
+    get:
+      tags: [ Reservations ]
+      summary: Get a reservation by id
+      description: >
+        MANAGER and EMPLOYEE can read any reservation.
+        A CLIENT can only read their own, and gets 403 otherwise.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Reservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Invalid payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The authenticated role is not allowed to perform this action
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: The request conflicts with the current state
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+
+    UserRole:
+      type: string
+      enum: [ CLIENT, EMPLOYEE, MANAGER ]
+
+    Genre:
+      type: string
+      enum: [ THRILLER, ROMANCE, COMEDY, DRAMA, ACTION, SCI_FI, FANTASY, ANIMATION ]
+
+    Error:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+
+    RegisterRequest:
+      type: object
+      required: [ firstName, lastName, birthdate, email, password, phone, role ]
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        phone:
+          type: string
+        role:
+          $ref: '#/components/schemas/UserRole'
+
+    LoginRequest:
+      type: object
+      required: [ email, password ]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+
+    MovieRequest:
+      type: object
+      required: [ title, genre, durationMinutes ]
+      properties:
+        title:
+          type: string
+        genre:
+          $ref: '#/components/schemas/Genre'
+        description:
+          type: string
+        durationMinutes:
+          type: integer
+          format: int64
+          minimum: 1
+
+    Movie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        genre:
+          $ref: '#/components/schemas/Genre'
+        description:
+          type: string
+        durationMinutes:
+          type: integer
+          format: int64
+
+    RoomRequest:
+      type: object
+      required: [ number, capacity ]
+      properties:
+        number:
+          type: string
+        capacity:
+          type: integer
+          minimum: 1
+
+    Seat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        capacity:
+          type: integer
+        seats:
+          type: array
+          items:
+            $ref: '#/components/schemas/Seat'
+
+    ProjectionRequest:
+      type: object
+      required: [ movieId, roomId, datetime, seatPrice ]
+      properties:
+        movieId:
+          type: string
+          format: uuid
+        roomId:
+          type: string
+          format: uuid
+        datetime:
+          type: string
+          format: date-time
+        seatPrice:
+          type: number
+          minimum: 0
+          exclusiveMinimum: true
+
+    Projection:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        datetime:
+          type: string
+          format: date-time
+        seatPrice:
+          type: number
+        movieId:
+          type: string
+          format: uuid
+        movieTitle:
+          type: string
+        roomId:
+          type: string
+          format: uuid
+        roomNumber:
+          type: string
+
+    ReservationRequest:
+      type: object
+      required: [ userId, projectionId, seatIds ]
+      properties:
+        userId:
+          type: string
+          format: uuid
+        projectionId:
+          type: string
+          format: uuid
+        seatIds:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: uuid
+
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        userId:
+          type: string
+          format: uuid
+        projectionId:
+          type: string
+          format: uuid
+        seatNumbers:
+          type: array
+          items:
+            type: string
+        totalPrice:
+          type: number
+
+security:
+  - bearerAuth: []
