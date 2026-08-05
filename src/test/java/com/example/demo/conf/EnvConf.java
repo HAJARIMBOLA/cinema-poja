@@ -4,10 +4,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-/**
- * Provides a real PostgreSQL instance (via Testcontainers) for integration tests, and wires the
- * Spring datasource properties to it. Instantiated reflectively by {@link FacadeIT}.
- */
 public class EnvConf {
 
   private static final PostgreSQLContainer<?> POSTGRES =
