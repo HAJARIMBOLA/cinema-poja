@@ -1,5 +1,6 @@
 package com.example.demo.endpoint.rest.controller;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,8 +61,8 @@ class ReservationControllerIT extends FacadeIT {
         projectionService.createProjection(
             movie.getId(), room.getId(), Instant.parse("2026-09-01T18:00:00Z"), BigDecimal.TEN);
 
-    owner = registerClient("res-owner@example.com");
-    otherClient = registerClient("res-other@example.com");
+    owner = registerClient("res-owner-" + System.nanoTime() + "@example.com");
+    otherClient = registerClient("res-other-" + System.nanoTime() + "@example.com");
 
     reservation =
         reservationService.createReservation(owner.getId(), proj.getId(), Set.of(seat.getId()));
@@ -73,7 +74,7 @@ class ReservationControllerIT extends FacadeIT {
             .firstName("Test")
             .lastName("Client")
             .birthdate(LocalDate.of(1990, 1, 1))
-            .email(email)
+            .email(System.nanoTime() + "-" + email)
             .password("password")
             .phone("+33600000000")
             .role(UserRole.CLIENT)
@@ -81,7 +82,7 @@ class ReservationControllerIT extends FacadeIT {
   }
 
   private MockMvc mockMvc() {
-    return MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    return MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
   }
 
   private String tokenFor(User user) {
@@ -95,7 +96,7 @@ class ReservationControllerIT extends FacadeIT {
                 .firstName("Test")
                 .lastName(role.name())
                 .birthdate(LocalDate.of(1990, 1, 1))
-                .email(email)
+                .email(System.nanoTime() + "-" + email)
                 .password("password")
                 .phone("+33600000000")
                 .role(role)

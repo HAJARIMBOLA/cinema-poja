@@ -1,5 +1,6 @@
 package com.example.demo.endpoint.rest.controller;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +27,7 @@ class MovieControllerIT extends FacadeIT {
   @Autowired private PasswordEncoder passwordEncoder;
 
   private MockMvc mockMvc() {
-    return MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    return MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
   }
 
   private String tokenFor(UserRole role, String email) {
@@ -36,7 +37,7 @@ class MovieControllerIT extends FacadeIT {
                 .firstName("Test")
                 .lastName(role.name())
                 .birthdate(LocalDate.of(1990, 1, 1))
-                .email(email)
+                .email(System.nanoTime() + "-" + email)
                 .password("password")
                 .phone("+33600000000")
                 .role(role)
