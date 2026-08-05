@@ -1,7 +1,7 @@
 package com.example.demo.endpoint.rest.controller;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.hamcrest.Matchers.not;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +22,9 @@ class AuthControllerIT extends FacadeIT {
   @Autowired private ObjectMapper objectMapper;
 
   private MockMvc mockMvc() {
-    return MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
+    return MockMvcBuilders.webAppContextSetup(webApplicationContext)
+        .apply(springSecurity())
+        .build();
   }
 
   private String registerPayload(String email, String role) {

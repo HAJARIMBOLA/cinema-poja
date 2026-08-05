@@ -49,7 +49,9 @@ class ProjectionControllerIT extends FacadeIT {
   }
 
   private MockMvc mockMvc() {
-    return MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
+    return MockMvcBuilders.webAppContextSetup(webApplicationContext)
+        .apply(springSecurity())
+        .build();
   }
 
   private String tokenFor(UserRole role, String email) {

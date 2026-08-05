@@ -27,7 +27,9 @@ class MovieControllerIT extends FacadeIT {
   @Autowired private PasswordEncoder passwordEncoder;
 
   private MockMvc mockMvc() {
-    return MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
+    return MockMvcBuilders.webAppContextSetup(webApplicationContext)
+        .apply(springSecurity())
+        .build();
   }
 
   private String tokenFor(UserRole role, String email) {
