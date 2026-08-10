@@ -86,4 +86,18 @@ public class ReservationService {
   public List<Reservation> getByUserId(UUID userId) {
     return reservationRepository.findByUserId(userId);
   }
+
+  public List<Seat> getAvailableSeats(UUID projectionId) {
+    Projection projection = projectionService.getById(projectionId);
+
+    Set<UUID> bookedSeatIds =
+        reservationRepository.findByProjectionId(projectionId).stream()
+            .flatMap(reservation -> reservation.getSeats().stream())
+            .map(Seat::getId)
+            .collect(Collectors.toSet());
+
+    return projection.getRoom().getSeats().stream()
+        .filter(seat -> !bookedSeatIds.contains(seat.getId()))
+        .toList();
+  }
 }

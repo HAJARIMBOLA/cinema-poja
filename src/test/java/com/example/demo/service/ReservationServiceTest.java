@@ -134,6 +134,36 @@ class ReservationServiceTest {
   }
 
   @Test
+  void availableSeatsShouldExcludeSeatsAlreadyBooked() {
+    Seat bookedSeat = seatInRoom();
+    Seat freeSeat = seatInRoom();
+    Projection projection = aProjection(BigDecimal.TEN);
+
+    when(projectionService.getById(projectionId)).thenReturn(projection);
+    Reservation existingReservation = Reservation.builder().seats(Set.of(bookedSeat)).build();
+    when(reservationRepository.findByProjectionId(projectionId))
+        .thenReturn(List.of(existingReservation));
+
+    List<Seat> availableSeats = reservationService.getAvailableSeats(projectionId);
+
+    assertThat(availableSeats).containsExactly(freeSeat);
+  }
+
+  @Test
+  void availableSeatsShouldReturnEveryRoomSeatWhenNothingIsBooked() {
+    Seat seat1 = seatInRoom();
+    Seat seat2 = seatInRoom();
+    Projection projection = aProjection(BigDecimal.TEN);
+
+    when(projectionService.getById(projectionId)).thenReturn(projection);
+    when(reservationRepository.findByProjectionId(projectionId)).thenReturn(List.of());
+
+    List<Seat> availableSeats = reservationService.getAvailableSeats(projectionId);
+
+    assertThat(availableSeats).containsExactlyInAnyOrder(seat1, seat2);
+  }
+
+  @Test
   void shouldComputeTotalPriceAsSeatPriceTimesSeatCount() {
     Seat seat1 = seatInRoom();
     Seat seat2 = seatInRoom();

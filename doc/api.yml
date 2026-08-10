@@ -218,6 +218,25 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /projections/{id}/available-seats:
+    get:
+      tags: [ Projections ]
+      summary: List the seats not yet booked for a projection, open to everyone
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Available seats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Seat'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /reservations:
     get:
       tags: [ Reservations ]

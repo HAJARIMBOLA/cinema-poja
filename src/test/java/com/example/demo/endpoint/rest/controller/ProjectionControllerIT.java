@@ -3,6 +3,7 @@ package com.example.demo.endpoint.rest.controller;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.demo.conf.FacadeIT;
@@ -15,6 +16,7 @@ import com.example.demo.security.JwtService;
 import com.example.demo.service.MovieService;
 import com.example.demo.service.RoomService;
 import com.example.demo.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,7 @@ class ProjectionControllerIT extends FacadeIT {
   @Autowired private JwtService jwtService;
   @Autowired private MovieService movieService;
   @Autowired private RoomService roomService;
+  @Autowired private ObjectMapper objectMapper;
 
   private Movie movie;
   private Room room;
@@ -123,5 +126,29 @@ class ProjectionControllerIT extends FacadeIT {
   @Test
   void getProjectionsShouldReturn200ForEveryone() throws Exception {
     mockMvc().perform(get("/projections")).andExpect(status().isOk());
+  }
+
+  @Test
+  void getAvailableSeatsShouldReturn200ForEveryone() throws Exception {
+    String token = tokenFor(UserRole.MANAGER, "proj-avail-manager@example.com");
+
+    String response =
+        mockMvc()
+            .perform(
+                put("/projections")
+                    .header("Authorization", "Bearer " + token)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(projectionPayload()))
+            .andExpect(status().isCreated())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    String projectionId = objectMapper.readTree(response).get("id").asText();
+
+    mockMvc()
+        .perform(get("/projections/" + projectionId + "/available-seats"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(room.getCapacity()));
   }
 }

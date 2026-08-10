@@ -3,7 +3,9 @@ package com.example.demo.endpoint.rest.controller;
 import com.example.demo.domain.entity.Projection;
 import com.example.demo.endpoint.rest.dto.ProjectionRequest;
 import com.example.demo.endpoint.rest.dto.ProjectionResponse;
+import com.example.demo.endpoint.rest.dto.RoomResponse;
 import com.example.demo.service.ProjectionService;
+import com.example.demo.service.ReservationService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProjectionController {
 
   private final ProjectionService projectionService;
+  private final ReservationService reservationService;
 
   @GetMapping
   public List<ProjectionResponse> getAll() {
@@ -32,6 +35,13 @@ public class ProjectionController {
   @GetMapping("/{id}")
   public ProjectionResponse getById(@PathVariable UUID id) {
     return ProjectionResponse.from(projectionService.getById(id));
+  }
+
+  @GetMapping("/{id}/available-seats")
+  public List<RoomResponse.SeatResponse> getAvailableSeats(@PathVariable UUID id) {
+    return reservationService.getAvailableSeats(id).stream()
+        .map(RoomResponse.SeatResponse::from)
+        .toList();
   }
 
   @PutMapping
